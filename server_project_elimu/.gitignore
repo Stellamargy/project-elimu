@@ -1,0 +1,10 @@
+#python intepreter and packages 
+.venv
+
+# Environment
+.env
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+
