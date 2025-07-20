@@ -43,7 +43,7 @@ def seed_users():
                 first_name=fake.first_name(),
                 last_name=fake.last_name(),
                 email=email,
-                password="studentpass",
+                password=bcrypt.generate_password_hash('hunter2'),
                 national_identification_number=fake.unique.random_number(digits=8),
                 role_id=roles["Student"].id,
                 active=True,
@@ -68,7 +68,7 @@ def seed_users():
                 first_name=fake.first_name(),
                 last_name=fake.last_name(),
                 email=email,
-                password="instructorpass",
+                password=bcrypt.generate_password_hash('hunter2'),
                 national_identification_number=fake.unique.random_number(digits=8),
                 role_id=roles["Instructor"].id,
                 active=True,
@@ -92,7 +92,7 @@ def seed_users():
                 first_name=fake.first_name(),
                 last_name=fake.last_name(),
                 email=email,
-                password="parentpass",
+                password=bcrypt.generate_password_hash('hunter2'),
                 national_identification_number=fake.unique.random_number(digits=8),
                 role_id=roles["Parent"].id,
                 active=True,
@@ -111,6 +111,8 @@ def seed_users():
 
 if __name__ == "__main__":
     with app.app_context():
+        db.drop_all()
+        db.create_all()
         seed_roles()
         seed_users()
 
