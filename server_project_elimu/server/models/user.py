@@ -4,12 +4,12 @@ class User(db.Model):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String, nullable=False)
-    last_name = db.Column(db.String, nullable=False)
-    national_identification_number = db.Column(db.String, unique=True)
-    email = db.Column(db.String, nullable=False, unique=True)
-    phone = db.Column(db.String)
-    password = db.Column(db.String, nullable=False)
+    first_name = db.Column(db.String(40), nullable=False)
+    last_name = db.Column(db.String(40), nullable=False)
+    national_identification_number = db.Column(db.String(20), unique=True)
+    email = db.Column(db.String(80), nullable=False, unique=True)
+    phone = db.Column(db.String(15))
+    password = db.Column(db.String(128), nullable=False)
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'), nullable=False)
     active = db.Column(db.Boolean, nullable=False, default=False)
     created_by = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)

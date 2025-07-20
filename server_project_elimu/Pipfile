@@ -9,6 +9,8 @@ python-dotenv = "*"
 flask-sqlalchemy = "*"
 psycopg2-binary = "*"
 flask-migrate = "*"
+faker = "*"
+flask-bcrypt = "*"
 
 [dev-packages]
 
