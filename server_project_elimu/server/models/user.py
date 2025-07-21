@@ -21,14 +21,23 @@ class User(db.Model):
     active = db.Column(db.Boolean, nullable=False, default=False) 
      #Should be an integer and required
     created_by = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    updated_by = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
+    #maybe implement a soft delete later
+    # deleted_by= db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     
     created_at = db.Column(db.DateTime, default=func.now())
     updated_at = db.Column(db.DateTime, onupdate=func.now())
+    
 
     # Relationships
     role = db.relationship('Role', back_populates='users')
-    # self-reference
-    creator = db.relationship('User', remote_side=[id])
+    
+    # Self-referential relationships
+    creator = db.relationship('User', foreign_keys=[created_by], remote_side=[id])
+    updater = db.relationship('User', foreign_keys=[updated_by], remote_side=[id])
+    #later implementation
+    # deleter = db.relationship('User', foreign_keys=[deleted_by], remote_side=[id])
+
     instructor = db.relationship('Instructor', uselist=False, back_populates='user')
     student = db.relationship('Student', uselist=False, back_populates='user')
     parent = db.relationship('Parent', uselist=False, back_populates='user')
