@@ -11,6 +11,7 @@ psycopg2-binary = "*"
 flask-migrate = "*"
 faker = "*"
 flask-bcrypt = "*"
+marshmallow = "*"
 
 [dev-packages]
 
