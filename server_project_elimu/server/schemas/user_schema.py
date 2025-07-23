@@ -1,6 +1,7 @@
 from server.app import marshmallow
 from marshmallow_sqlalchemy import auto_field
 from marshmallow import validates, ValidationError,EXCLUDE
+from marshmallow.validate import Email,Length
 from server.models import User
 import re
 # data rules for user inputs using marshmallow
@@ -13,7 +14,10 @@ class UserSchema(marshmallow.SQLAlchemyAutoSchema):
         exclude = ("id",)
     
 
-
+    id=auto_field(dump_only=True)
+    # False on first registration , becomes active after first login .
+    active=auto_field(load_default=False,required=True)
+    email = auto_field(required=True, validate=[Email(),Length(max=80)],error="Should be a valid email address with max characters of 80")
 
     #custom validation
     #email - not a strong email validation -yikes

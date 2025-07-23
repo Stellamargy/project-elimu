@@ -4,22 +4,14 @@ class User(db.Model):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
-    #first name and last name are required fields and characters is less than / equal to 40
     first_name = db.Column(db.String(40), nullable=False)
     last_name = db.Column(db.String(40), nullable=False)
-    # National id should have characters less than / equal to 20
     national_identification_number = db.Column(db.String(20), unique=True)
-    # Email should be a valid email address and a required field
     email = db.Column(db.String(80), nullable=False, unique=True)
-    # Follow right pattern and include code -Only Kenyans are allowed
     phone = db.Column(db.String(15))
-    #Strong password  and a required field
     password = db.Column(db.String(128), nullable=False)
-    #Should be an integer and required
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'), nullable=False)
-    # will have default value at creating-POST
     active = db.Column(db.Boolean, nullable=False, default=False) 
-     #Should be an integer and required
     created_by = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     updated_by = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
     #maybe implement a soft delete later
