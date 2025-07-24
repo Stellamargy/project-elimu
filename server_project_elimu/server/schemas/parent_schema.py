@@ -11,7 +11,6 @@ class ParentSchema(UserSchema):
         
         
 
-    # user_id is set by backend; show in response only
-    user_id = auto_field(dump_only=True)
+   
 
    

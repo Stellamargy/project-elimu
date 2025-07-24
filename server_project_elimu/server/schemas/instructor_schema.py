@@ -11,7 +11,6 @@ class InstructorSchema(UserSchema):
         
         
 
-    # user_id is the primary key — set by backend only
-    user_id = auto_field(dump_only=True)
+   
 
     

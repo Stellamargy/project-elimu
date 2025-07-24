@@ -9,7 +9,7 @@ class StudentSchema(UserSchema):
         model=Student
         load_instance=True
         
-    user_id = auto_field(dump_only=True)
+  
 
 
         

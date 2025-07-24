@@ -11,13 +11,12 @@ class UserSchema(marshmallow.SQLAlchemyAutoSchema):
         load_instance=True
         include_fk=True
         unknown = EXCLUDE
-        exclude = ("id",)
         ordered = True
     
 
     id=auto_field(dump_only=True)
     # False on first registration , becomes active after first login .
-    active=auto_field(load_default=False,required=True)
+    active=auto_field(load_default=False)
     email = auto_field(
     required=True,
     validate=[
