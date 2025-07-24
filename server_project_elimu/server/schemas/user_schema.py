@@ -4,7 +4,7 @@ from marshmallow import validates, ValidationError,EXCLUDE
 from marshmallow.validate import Email,Length
 from server.models import User
 import re
-# data rules for user inputs using marshmallow
+# data rules for user(base schema) inputs using marshmallow
 class UserSchema(marshmallow.SQLAlchemyAutoSchema):
     class Meta:
         model=User
@@ -12,21 +12,22 @@ class UserSchema(marshmallow.SQLAlchemyAutoSchema):
         include_fk=True
         unknown = EXCLUDE
         exclude = ("id",)
+        ordered = True
     
 
     id=auto_field(dump_only=True)
     # False on first registration , becomes active after first login .
     active=auto_field(load_default=False,required=True)
-    email = auto_field(required=True, validate=[Email(),Length(max=80)],error="Should be a valid email address with max characters of 80")
+    email = auto_field(
+    required=True,
+    validate=[
+        Email(error="Invalid email format."),
+        Length(max=80, error="Email must be at most 80 characters.")
+    ]
+)
 
     #custom validation
-    #email - not a strong email validation -yikes
-    @validates('email')
-    def validate_email(self, value):
-        if "@" not in value or "." not in value:
-            raise ValidationError("Enter a valid email address.")
-        
-        
+   
     #phone number-include country code , only kenyans , length too
     @validates('phone')
     def validate_phone(self, value):
@@ -46,6 +47,11 @@ class UserSchema(marshmallow.SQLAlchemyAutoSchema):
             raise ValidationError(
                 "Password must be at least 8 characters long, include uppercase, lowercase, a digit, and a special character."
             )
+    @validates('national_identification_number')
+    def validate_national_id(self,value):
+        national_id_regex=r'^\d{1,20}$'
+        if not re.match(national_id_regex,value):
+            raise ValidationError('National identification number is invalid-it should only contain only digits ,max characters is 20')
    
 
         
