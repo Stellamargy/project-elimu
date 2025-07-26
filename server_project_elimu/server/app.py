@@ -1,5 +1,5 @@
 from flask import Flask
-from server.models import db,migrate,User,Role,Instructor,Parent,Student
+from server.models import db,migrate,User,Role,Instructor,Parent,Student,Administrator
 from .config import Config
 from .extension import bcrypt,marshmallow
 from server.controllers import auth

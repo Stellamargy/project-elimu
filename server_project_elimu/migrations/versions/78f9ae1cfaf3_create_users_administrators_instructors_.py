@@ -1,8 +1,8 @@
-"""changes field user_id to id -id feels right for pk
+"""create users , administrators,instructors,parents,students tables
 
-Revision ID: 391c3f802521
-Revises: 160ad91c70b5
-Create Date: 2025-07-24 09:38:43.125883
+Revision ID: 78f9ae1cfaf3
+Revises: 
+Create Date: 2025-07-26 19:35:47.078887
 
 """
 from alembic import op
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '391c3f802521'
-down_revision = '160ad91c70b5'
+revision = '78f9ae1cfaf3'
+down_revision = None
 branch_labels = None
 depends_on = None
 
@@ -34,19 +34,27 @@ def upgrade():
     sa.Column('national_identification_number', sa.String(length=20), nullable=True),
     sa.Column('email', sa.String(length=80), nullable=False),
     sa.Column('phone', sa.String(length=15), nullable=True),
-    sa.Column('password', sa.String(length=128), nullable=False),
+    sa.Column('_password', sa.String(length=128), nullable=False),
     sa.Column('role_id', sa.Integer(), nullable=False),
     sa.Column('active', sa.Boolean(), nullable=False),
-    sa.Column('created_by', sa.Integer(), nullable=False),
+    sa.Column('type', sa.String(length=100), nullable=False),
+    sa.Column('created_by', sa.Integer(), nullable=True),
     sa.Column('updated_by', sa.Integer(), nullable=True),
-    sa.Column('created_at', sa.DateTime(), nullable=True),
-    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.Column('updated_at', sa.DateTime(), nullable=False),
     sa.ForeignKeyConstraint(['created_by'], ['users.id'], ),
     sa.ForeignKeyConstraint(['role_id'], ['roles.id'], ),
     sa.ForeignKeyConstraint(['updated_by'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email'),
     sa.UniqueConstraint('national_identification_number')
+    )
+    op.create_table('administrators',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('access_level', sa.String(length=100), nullable=False),
+    sa.CheckConstraint("access_level IN ('supervisor', 'system_admin')", name='access_level'),
+    sa.ForeignKeyConstraint(['id'], ['users.id'], ),
+    sa.PrimaryKeyConstraint('id')
     )
     op.create_table('instructors',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -77,6 +85,7 @@ def downgrade():
     op.drop_table('students')
     op.drop_table('parents')
     op.drop_table('instructors')
+    op.drop_table('administrators')
     op.drop_table('users')
     op.drop_table('roles')
     # ### end Alembic commands ###

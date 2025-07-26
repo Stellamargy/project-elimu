@@ -1,12 +1,16 @@
 from .database import db
+from .user import User
 
-
-class Student(db.Model):
+class Student(User):
     __tablename__ = 'students'
-    #one to one relationship in db level and enforces CTI
+    #Enforces one to one CTI integrity 
     id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     student_number = db.Column(db.String(20), nullable=False, unique=True)
     date_of_birth = db.Column(db.Date, nullable=False)
+    __mapper_args__ = {
+        'polymorphic_identity': 'student'
+    }
+ 
     
 
-    user = db.relationship('User', back_populates='student')
+   

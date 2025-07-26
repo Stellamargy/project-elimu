@@ -1,6 +1,6 @@
 from server.app import marshmallow
 from marshmallow_sqlalchemy import auto_field
-from marshmallow import validates, ValidationError,EXCLUDE
+from marshmallow import validates, ValidationError,EXCLUDE,fields
 from marshmallow.validate import Email,Length
 from server.models import User
 import re
@@ -12,18 +12,22 @@ class UserSchema(marshmallow.SQLAlchemyAutoSchema):
         include_fk=True
         unknown = EXCLUDE
         ordered = True
+        exclude = ("created_at","updated_at")
     
 
     id=auto_field(dump_only=True)
-    # False on first registration , becomes active after first login .
-    active=auto_field(load_default=False)
+    password = fields.String(
+        load_only=True,
+        required=True,
+        
+    )
     email = auto_field(
     required=True,
     validate=[
-        Email(error="Invalid email format."),
+        Email(error="Invalid email ."),
         Length(max=80, error="Email must be at most 80 characters.")
-    ]
-)
+    ])
+    created_by=auto_field(required=True)
 
     #custom validation
    
@@ -52,8 +56,8 @@ class UserSchema(marshmallow.SQLAlchemyAutoSchema):
         if not re.match(national_id_regex,value):
             raise ValidationError('National identification number is invalid-it should only contain only digits ,max characters is 20')
    
-
-        
+    
+            
 
 
 
