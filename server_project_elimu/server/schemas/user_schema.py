@@ -16,7 +16,7 @@ class UserSchema(marshmallow.SQLAlchemyAutoSchema):
     
 
     id=auto_field(dump_only=True)
-    password = fields.String(
+    _password = auto_field(
         load_only=True,
         required=True,
         
@@ -28,6 +28,7 @@ class UserSchema(marshmallow.SQLAlchemyAutoSchema):
         Length(max=80, error="Email must be at most 80 characters.")
     ])
     created_by=auto_field(required=True)
+    type=auto_field(required=False)
 
     #custom validation
    
@@ -43,7 +44,7 @@ class UserSchema(marshmallow.SQLAlchemyAutoSchema):
     #must have at least one special character
     #must have at leat one digit .
     #must have at least one uppercase
-    @validates('password')
+    @validates('_password')
     def validate_password(self, value):
         password_regex = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$'
         if not re.match(password_regex, value):

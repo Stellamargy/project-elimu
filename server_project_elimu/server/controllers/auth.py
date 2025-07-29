@@ -8,7 +8,7 @@ from server.app import bcrypt
 auth=Blueprint('auth',__name__,url_prefix='/auth')
 
 #Route to add users
-@auth.route('/register_admin',methods=['POST'])
+@auth.route('/register',methods=['POST'])
 def add_admin():
     # get json data from request
     data=request.get_json()
@@ -23,17 +23,28 @@ def add_admin():
     if existing_user_email or existing_user_national_id:
         return jsonify({"error":"User already exist"}),409
     
-    #manually assign type
-    # data["type"]='administrator'
-    try:
-        admin_data = AdministratorSchema().load(data)  # validate + deserialize
-        new_admin = Administrator(**admin_data)
-        new_admin.password=data.get("password")
-        
-        db.session.add(new_admin)
-        db.session.commit()
+    # Dynamic dispatch based on role
+    user_class_map = {
+        'administrator': (AdministratorSchema, Administrator),
+        'instructor': (InstructorSchema, Instructor),
+        'parent':(ParentSchema, Parent),
+        'student':(StudentSchema, Student)
+    }
+    mapping = user_class_map.get(role.role_name.lower())
+    if not mapping:
+        return jsonify({"error": "Unsupported role for registration."}), 400
 
-        return jsonify({"message": "Admin registered successfully."}), 201
+    schema_class, model_class = mapping
+
+
+    try:
+        model_instance = schema_class().load(data)  # validate + deserialize
+        model_instance.password=data.get("_password")
+        db.session.add(model_instance)
+        db.session.commit()
+        return jsonify({"message": f"{role.role_name.capitalize()} registered successfully."}), 201
+
+       
 
     except ValidationError as err:
         return jsonify({"errors": err.messages}), 400
