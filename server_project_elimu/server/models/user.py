@@ -14,9 +14,8 @@ class User(db.Model):
     _password = db.Column(db.String(128), nullable=False)
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'), nullable=False)
     active = db.Column(db.Boolean, nullable=False, default=True) 
-    # used by CTI to know the child table
+    # used by CTI to know the child table(smart insertion and querying)
     type=db.Column(db.String(100),nullable=False)
-    #Removed this to add a default system user 
     created_by = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
     updated_by = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
     #maybe implement a soft delete later
@@ -43,12 +42,8 @@ class User(db.Model):
     
 
     
-    @property
-    def password(self):
-        raise AttributeError("Password is write-only.")
-
-    @password.setter
-    def password(self, plaintext_password):
+    
+    def set_password(self, plaintext_password):
         self._password = bcrypt.generate_password_hash(plaintext_password).decode("utf-8")
 
     

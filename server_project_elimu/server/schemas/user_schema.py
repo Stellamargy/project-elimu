@@ -4,7 +4,7 @@ from marshmallow import validates, ValidationError,EXCLUDE,fields
 from marshmallow.validate import Email,Length
 from server.models import User
 import re
-# data rules for user(base schema) inputs using marshmallow
+# data rules/validations,serialization and deserialiation configuration for user entity  
 class UserSchema(marshmallow.SQLAlchemyAutoSchema):
     class Meta:
         model=User
@@ -30,9 +30,9 @@ class UserSchema(marshmallow.SQLAlchemyAutoSchema):
     created_by=auto_field(required=True)
     type=auto_field(required=False)
 
-    #custom validation
+    #custom validation / data rules 
    
-    #phone number-include country code , only kenyans , length too
+    #phone number-only kenyans(use country code) are allowed to register, should be a valid kenyan number
     @validates('phone')
     def validate_phone(self, value):
         phone_regex = r'^\+254\d{9}$'
@@ -49,13 +49,14 @@ class UserSchema(marshmallow.SQLAlchemyAutoSchema):
         password_regex = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$'
         if not re.match(password_regex, value):
             raise ValidationError(
-                "Password must be at least 8 characters long, include uppercase, lowercase, a digit, and a special character."
+                "Password must be at least 8 characters long, " \
+                "include uppercase, lowercase, a digit, and a special character."
             )
     @validates('national_identification_number')
     def validate_national_id(self,value):
         national_id_regex=r'^\d{1,20}$'
         if not re.match(national_id_regex,value):
-            raise ValidationError('National identification number is invalid-it should only contain only digits ,max characters is 20')
+            raise ValidationError('National identification number is invalid')
    
     
             
