@@ -8,12 +8,11 @@ def success_response(status,message,data,status_code):
     }),status_code
 
 def error_response(status,message,status_code,errors=None):
-    response= jsonify(
-        {
+    response={
             "status":status,
             "message":message,  
         }
-        )
+    
     if errors:
         response["errors"]=errors
-    return response,status_code
+    return jsonify(response),status_code

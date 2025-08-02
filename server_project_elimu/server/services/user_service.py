@@ -96,7 +96,7 @@ class UserService():
             if result is not None:
                 return result
 
-            model_instance.set_password(data.get("password"))
+            model_instance.set_password(data.get("_password"))
             db.session.add(model_instance)
             db.session.commit()
 
