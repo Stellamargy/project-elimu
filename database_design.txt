@@ -1,0 +1,112 @@
+Table roles {
+  id integer [primary key]
+  role_name varchar [not null, unique]
+  description text
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table users {
+  id integer [primary key]
+  first_name varchar [not null]
+  last_name varchar [not null]
+  national_identification_number varchar [unique]
+  email varchar [not null, unique]
+  phone varchar
+  password varchar [not null]
+  role_id integer [not null, ref: > roles.id]
+  active boolean [not null, default: false]
+  created_by integer [not null, ref: > users.id]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table instructors {
+  user_id integer [primary key, ref: > users.id]
+  employee_number varchar [not null, unique]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table students {
+  user_id integer [primary key, ref: > users.id]
+  student_number varchar [not null, unique]
+  date_of_birth date [not null]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table parents {
+  user_id integer [primary key, ref: > users.id]
+  address text
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table activities {
+  id integer [primary key]
+  name varchar [not null]
+  description text
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table timetables {
+  id integer [primary key]
+  activity_id integer [not null, ref: > activities.id]
+  instructor_id integer [not null, ref: > instructors.user_id]
+  day_of_week varchar [not null] 
+  start_time time [not null]
+  end_time time [not null]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table lesson_plans {
+  id integer [primary key]
+  instructor_id integer [not null, ref: > instructors.user_id]
+  timetable_id integer [ref: > timetables.id]
+  title varchar [not null]
+  multimedia_url text
+  notes text
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table attendance {
+  id integer [primary key]
+  student_id integer [not null, ref: > students.user_id]
+  instructor_id integer [not null, ref: > instructors.user_id]
+  status varchar [not null] // e.g., present, absent, late
+  date date [not null]
+  marked_by integer [not null, ref: > users.id]
+  comment text [not null]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table instructor_student {
+  instructor_id integer [ref: > instructors.user_id]
+  student_id integer [ref: > students.user_id]
+  created_at timestamp
+  updated_at timestamp
+  primary key (instructor_id, student_id)
+}
+
+Table parent_student {
+  parent_id integer [ref: > parents.user_id]
+  student_id integer [ref: > students.user_id]
+  relationship_note text
+  created_at timestamp
+  updated_at timestamp
+  primary key (parent_id, student_id)
+}
+
+Table student_timetable {
+  student_id integer [ref: > students.user_id]
+  timetable_id integer [ref: > timetables.id]
+  enrollment_status varchar // e.g., enrolled, dropped
+  created_at timestamp
+  updated_at timestamp
+  primary key (student_id, timetable_id)
+}

@@ -1,1 +1,0 @@
-debug_git="I need to see this file to know my local and origin is in sync"
