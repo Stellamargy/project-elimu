@@ -25,7 +25,7 @@ class UserSchema(marshmallow.SQLAlchemyAutoSchema):
     required=True,
     validate=[
         Email(error="Invalid email ."),
-        Length(max=80, error="Email must be at most 80 characters.")
+        Length(max=80, error="Email should be a maximum of 80 characters.")
     ])
     created_by=auto_field(required=True)
     type=auto_field(required=False)
