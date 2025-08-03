@@ -16,6 +16,11 @@ def add_user():
     request_data = request.get_json()
     return UserService.register_user(request_data)
 
+@auth.route('/login')
+def login():
+    login_credintials=request.get_json()
+    
+
             
 
 
