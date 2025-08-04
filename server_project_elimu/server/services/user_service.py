@@ -1,9 +1,10 @@
 from server.models import db,User,Student,Instructor,Role,Administrator,Parent
 from server.schemas import (AdministratorSchema,
-InstructorSchema,StudentSchema,ParentSchema)
+InstructorSchema,StudentSchema,ParentSchema,LoginSchema)
 from server.utilis import error_response,success_response 
 from marshmallow import ValidationError
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
+from server.extension import bcrypt
 
 
 class UserService():
@@ -130,3 +131,48 @@ class UserService():
                 message="A database error occurred.",
                 status_code=500
             )
+
+    # log in
+    @classmethod
+    def login_user(cls,data):
+        # get login credentials ,validate input before proceeding to compare .
+        login_schema=LoginSchema()
+        try:
+            login_credentials=login_schema.load(data)
+            # Do db comparison 
+            user=User.query.filter_by(email=login_credentials.get("email")).first()
+            if not user:
+                return error_response(
+                    status="error",
+                    message="Wrong email or password",
+                    status_code=401
+                    )
+            is_password_valid=bcrypt.check_password_hash(
+                user._password,
+                login_credentials.get("_password"))
+            if not is_password_valid:
+                return error_response(
+                    status="error",
+                    message="Wrong email or password",
+                    status_code=401
+                )
+                    
+        
+            return "Successful logged in "
+        except ValidationError as err:
+            return error_response(
+                status="error",
+                status_code=400,
+                message="Invalid data",
+                errors=err.messages
+            )
+        
+
+
+        
+
+
+        
+            
+
+            
