@@ -1,10 +1,12 @@
 from server.models import db,User,Student,Instructor,Role,Administrator,Parent
 from server.schemas import (AdministratorSchema,
 InstructorSchema,StudentSchema,ParentSchema,LoginSchema)
-from server.utilis import error_response,success_response 
+from server.utilis import error_response,success_response ,TokenManager
 from marshmallow import ValidationError
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from server.extension import bcrypt
+from flask import jsonify
+
 
 
 class UserService():
@@ -156,9 +158,22 @@ class UserService():
                     message="Wrong email or password",
                     status_code=401
                 )
-                    
+            #check if the user is active
+            if not user.active:
+                return error_response(
+                    status="error",
+                    message="Account is inactive",
+                    status_code=403
+                )
+            token =TokenManager.create_token(user)
+            return success_response(
+                status="sucess",
+                message="Logging in sucessful",
+                status_code=200,
+                data=token
+            )  
         
-            return "Successful logged in "
+            # return "Successful logged in "
         except ValidationError as err:
             return error_response(
                 status="error",
