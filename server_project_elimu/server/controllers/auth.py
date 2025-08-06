@@ -4,8 +4,9 @@ from server.schemas import (
     UserSchema, InstructorSchema, ParentSchema, StudentSchema, AdministratorSchema
 )
 from marshmallow import ValidationError
-from server.app import bcrypt
-from server.services.user_service import UserService
+from server.extension import bcrypt
+from server.services import UserService,LoginService
+from server.utilis import error_response
 
 
 
@@ -16,10 +17,23 @@ def add_user():
     request_data = request.get_json()
     return UserService.register_user(request_data)
 
-@auth.route('/login')
+@auth.route('/login',methods=['POST'])
 def login():
-    login_credintials=request.get_json()
+    # get request json from request object
+    login_credentials=request.get_json()
+    # If no request dict
+    if not login_credentials:
+        return error_response(
+            status="error",
+            message="Missing request data",
+            status_code=400
+        )
+    return LoginService.login_user(login_credentials)
     
+
+        
+   
+
 
             
 

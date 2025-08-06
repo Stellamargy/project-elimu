@@ -4,7 +4,8 @@ from marshmallow import validates, ValidationError,EXCLUDE,fields
 from marshmallow.validate import Email,Length
 from server.models import User
 import re
-# data rules/validations,serialization and deserialiation configuration for user entity  
+# User attributes data rules
+# Deserialization and schema  configuration
 class UserSchema(marshmallow.SQLAlchemyAutoSchema):
     class Meta:
         model=User
